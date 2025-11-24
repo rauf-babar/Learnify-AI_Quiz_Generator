@@ -223,7 +223,7 @@ public class HomeFragment extends Fragment {
             public void onError(Throwable t) {
                 isProcessing = false;
                 progressBar.setVisibility(View.GONE);
-                showErrorDialog("YouTube Error", "Could not get video info. Ensure video has captions.");
+                showErrorDialog("YouTube Error", t.getMessage());
             }
         });
     }

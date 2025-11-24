@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape android:shape="oval">
+            <solid android:color="#4CAF50"/>
+            <size android:width="24dp" android:height="24dp"/>
+        </shape>
+    </item>
+    <item
+        android:drawable="@drawable/ic_done_check"
+        android:bottom="4dp"
+        android:left="4dp"
+        android:right="4dp"
+        android:top="4dp">
+    </item>
+</layer-list>

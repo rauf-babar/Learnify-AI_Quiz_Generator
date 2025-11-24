@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:color="@color/otp_box_background" android:state_enabled="false" android:state_checked="true"/>
+    <item android:color="#FFF0F0" android:state_enabled="false" android:state_checked="false"/>
+    <item android:color="@color/white"/>
+</selector>

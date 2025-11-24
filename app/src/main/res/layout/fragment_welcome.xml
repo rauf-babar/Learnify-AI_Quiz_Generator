@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    tools:context=".WelcomeFragment">
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="40dp">
+
+            <FrameLayout
+                android:id="@+id/back_button_container"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="@drawable/bg_back_button_stroke"
+                android:elevation="10dp"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="30dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <ImageView
+                    android:id="@+id/iv_back_button_icon"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_gravity="center"
+                    android:contentDescription="@string/back_button"
+                    android:src="@drawable/ic_back_button" />
+            </FrameLayout>
+
+            <ImageView
+                android:background="@color/cardview_light_background"
+                android:id="@+id/iv_welcome_illustration"
+                android:layout_width="match_parent"
+                android:layout_height="400dp"
+                android:layout_marginTop="0dp"
+                android:contentDescription="@string/illustration_of_mobile_login"
+                android:src="@drawable/illustration_welcome_page"
+                android:scaleType="center"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/back_button_container"
+                app:layout_constraintVertical_bias="0.0" />
+
+            <TextView
+                android:id="@+id/tv_welcome_title"
+                style="@style/TextAppearance.Header.Small"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text="@string/welcome"
+                android:textSize="25sp"
+                android:textStyle="bold"
+                android:textColor="@color/text_primary_dark"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/iv_welcome_illustration" />
+
+            <TextView
+                android:id="@+id/tv_welcome_body"
+                style="@style/TextAppearance.Body.Onboarding"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:gravity="center"
+                android:textSize="15sp"
+                android:text="@string/sign_in_to_enter_the_app"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tv_welcome_title" />
+
+            <LinearLayout
+                android:id="@+id/button_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:orientation="vertical"
+                android:layout_marginTop="20dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tv_welcome_body">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_sign_in"
+                    style="@style/TextAppearance.Button.Large"
+                    android:layout_width="328dp"
+                    android:layout_height="55dp"
+                    android:textColor="@color/youtube_white"
+                    android:background="@drawable/bg_button_solid_purple"
+                    android:elevation="10dp"
+                    android:text="@string/sign_in"
+                    android:textStyle="bold"
+                    app:backgroundTint="@null" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginBottom="20dp"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginEnd="24dp">
+
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="1dp"
+                        android:layout_weight="1"
+                        android:background="@color/text_secondary_gray" />
+
+                    <TextView
+                        android:id="@+id/tv_or_text_separator"
+                        style="@style/TextAppearance.Body.Small.Medium"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginEnd="16dp"
+                        android:text="@string/or"
+                        android:textColor="@color/text_secondary_gray" />
+
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="1dp"
+                        android:layout_weight="1"
+                        android:background="@color/text_secondary_gray" />
+
+                </LinearLayout>
+                <com.google.android.material.button.MaterialButton
+
+                    android:id="@+id/btn_sign_up"
+                    style="@style/TextAppearance.Button.Large"
+                    android:layout_width="328dp"
+                    android:layout_height="55dp"
+                    android:background="@drawable/bg_button_solid_purple"
+                    android:text="@string/sign_up"
+                    android:textColor="@color/youtube_white"
+                    android:elevation="10dp"
+                    android:textStyle="bold"
+                    app:backgroundTint="@null" />
+
+            </LinearLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

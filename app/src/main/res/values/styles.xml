@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="TextAppearance.Title.Splash" parent="Widget.AppCompat.TextView">
+        <item name="android:fontFamily">@font/manrope_font_family</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">30sp</item>
+        <item name="android:textColor">@color/figma_purple_main</item>
+        <item name="android:lineSpacingExtra">9sp</item>
+        <item name="android:letterSpacing">0.002</item>
+    </style>
+
+
+    <style name="TextAppearance.Title.Onboarding" parent="Widget.AppCompat.TextView">
+        <item name="android:fontFamily">@font/manrope_font_family</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">22sp</item>
+        <item name="android:textColor">@color/text_primary_dark</item>
+        <item name="android:lineSpacingExtra">8sp</item>
+        <item name="android:letterSpacing">0.002</item>
+    </style>
+
+    <style name="TextAppearance.Body.Onboarding" parent="Widget.AppCompat.TextView">
+        <item name="android:fontFamily">@font/manrope_font_family</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/text_secondary_gray</item>
+        <item name="android:lineSpacingExtra">7sp</item>
+        <item name="android:letterSpacing">0.002</item>
+    </style>
+
+    <style name="TextAppearance.Header.Small" parent="Widget.AppCompat.TextView">
+        <item name="android:fontFamily">@font/manrope_font_family</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">22sp</item>
+        <item name="android:textColor">@color/text_primary_dark</item>
+        <item name="android:lineSpacingExtra">8sp</item>
+        <item name="android:letterSpacing">0.002</item>
+    </style>
+
+
+
+    <style name="Widget.App.EditText" parent="Widget.AppCompat.EditText">
+        <item name="android:fontFamily">@font/manrope_font_family</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:textColor">@color/text_primary_dark</item>
+        <item name="android:textColorHint">@color/text_hint_gray_light</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:letterSpacing">0.002</item>
+        <item name="android:background">@drawable/bg_back_button_stroke</item>
+        <item name="android:paddingStart">26dp</item>
+        <item name="android:paddingEnd">54dp</item>
+        <item name="android:paddingTop">17dp</item>
+        <item name="android:paddingBottom">17dp</item>
+    </style>
+
+    <style name="Widget.App.EditText.Large" parent="Widget.App.EditText">
+        <item name="android:textSize">22sp</item>
+    </style>
+
+    <style name="TextAppearance.Link.ForgotPassword" parent="Widget.AppCompat.TextView">
+        <item name="android:fontFamily">@font/manrope_font_family</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@color/text_link_blue</item>
+        <item name="android:letterSpacing">0.002</item>
+    </style>
+
+    <style name="TextAppearance.Body.Small.Medium" parent="Widget.AppCompat.TextView">
+        <item name="android:fontFamily">@font/manrope_font_family</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/text_secondary_gray</item>
+        <item name="android:letterSpacing">0.002</item>
+    </style>
+
+    <style name="TextAppearance.Separator" parent="Widget.AppCompat.TextView">
+        <item name="android:fontFamily">@font/manrope_font_family</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:textColor">@color/text_hint_gray_light</item>
+        <item name="android:letterSpacing">0.002</item>
+    </style>
+
+    <style name="Widget.App.Button.Stroked" parent="Widget.AppCompat.Button">
+        <item name="android:fontFamily">@font/manrope_font_family</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:textColor">@color/text_hint_gray_light</item>
+        <item name="android:background">@drawable/bg_button_stroked_gray</item>
+        <item name="android:paddingTop">17dp</item>
+        <item name="android:paddingBottom">17dp</item>
+        <item name="android:gravity">center</item>
+    </style>
+
+    <style name="TextAppearance.Body.Small.Bold" parent="TextAppearance.Body.Small.Medium">
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/figma_purple_main</item>
+    </style>
+
+    <style name="TextAppearance.Body.Faded" parent="Widget.AppCompat.TextView">
+        <item name="android:fontFamily">@font/manrope_font_family</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/text_secondary_gray_dark</item>
+        <item name="android:lineSpacingExtra">7sp</item>
+        <item name="android:letterSpacing">0.002</item>
+    </style>
+    
+    <style name="TextAppearance.Button.Large" parent="Widget.MaterialComponents.Button.TextButton">
+        <item name="android:fontFamily">@font/manrope_font_family</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:gravity">center</item>
+
+        <item name="rippleColor">#33FFFFFF</item>
+    </style>
+
+
+    <style name="TextAppearance.ScreenTitle" parent="Widget.AppCompat.TextView">
+        <item name="android:fontFamily">@font/manrope_font_family</item>
+        <item name="android:textStyle">bold</item> <item name="android:textSize">20sp</item>
+        <item name="android:textColor">@color/text_primary_dark</item>
+        <item name="android:letterSpacing">0.002</item>
+    </style>
+
+    <style name="TextAppearance.ScreenSubtitle" parent="TextAppearance.ScreenTitle">
+        <item name="android:textSize">24sp</item>
+        <item name="android:textColor">@color/figma_purple_main</item>
+    </style>
+
+    <style name="TextAppearance.ProfileCard.Name" parent="Widget.AppCompat.TextView">
+        <item name="android:fontFamily">@font/manrope_font_family</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">25sp</item>
+        <item name="android:letterSpacing">0.003</item>
+    </style>
+
+    <style name="TextAppearance.ProfileCard.Role" parent="TextAppearance.ProfileCard.Name">
+        <item name="android:textStyle">normal</item>
+        <item name="android:textSize">18sp</item>
+    </style>
+
+
+
+    <style name="Widget.App.BottomNavigationView" parent="Widget.MaterialComponents.BottomNavigationView">
+
+        <item name="android:background">@android:color/transparent</item>
+
+        <item name="itemBackground">@android:color/transparent</item>
+    </style>
+
+
+</resources>

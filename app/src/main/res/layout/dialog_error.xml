@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="320dp"
+    android:layout_height="wrap_content"
+    app:cardCornerRadius="24dp"
+    app:cardElevation="8dp"
+    app:cardBackgroundColor="@color/white">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:padding="24dp">
+
+        <FrameLayout
+            android:layout_width="72dp"
+            android:layout_height="72dp"
+            android:background="@drawable/bg_back_button_stroke"
+            android:backgroundTint="@color/illustration_bg_pink_light"
+           >
+
+            <ImageView
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_gravity="center"
+                android:src="@drawable/error_failed"
+                android:contentDescription="@string/error" />
+        </FrameLayout>
+
+        <TextView
+            android:id="@+id/tv_error_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="@string/error"
+            android:textColor="@color/text_primary_dark"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:gravity="center"/>
+
+        <TextView
+            android:id="@+id/tv_error_message"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@string/error"
+            android:textColor="@color/text_secondary_gray"
+            android:textSize="15sp"
+            android:gravity="center"
+            android:lineSpacingExtra="4dp"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_error_action"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:layout_marginTop="24dp"
+            android:text="@string/try_again"
+            android:textColor="@color/youtube_white"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:backgroundTint="@color/red_warning"
+            app:cornerRadius="16dp"/>
+
+    </LinearLayout>
+
+</com.google.android.material.card.MaterialCardView>

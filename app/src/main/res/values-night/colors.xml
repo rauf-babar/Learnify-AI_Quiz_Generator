@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="text_primary_dark">#FFFFFF</color>
+    <color name="text_secondary_gray">#D8D8E5</color>
+
+    <color name="white">#121212</color>
+    <color name="youtube_white">#FFFFFF</color>
+    <color name="illustration_purple_muted">#9FA3F0</color>
+    <color name="figma_purple_main">#7B61FF</color>
+
+    <color name="text_hint_gray_light">#6E6E6E</color>
+    <color name="text_link_blue">#829BF8</color>
+
+    <color name="illustration_bg_pink_light">#3E1B1B</color>
+
+    <color name="text_secondary_gray_dark">#D0D0D0</color>
+
+    <color name="bg_surface_gray">#1E1E1E</color>
+    <color name="stroke_gray">#444444</color>
+
+    <color name="illustration_bg_lavender_medium">#212127</color>
+    <color name="illustration_black">#FFFFFF</color>
+    <color name="otp_box_background">#1B331B</color>
+    <color name="gradient_start_blue">#5A7CD6</color>
+    <color name="gradient_stop_purple">#C06DDC</color>
+
+    <color name="fab_gradient_start">#8A66FC</color>
+    <color name="fab_gradient_stop">#762AF3</color>
+    <color name="profile_image_background">#2A2A35</color>
+    <color name="illustration_check_light">#2C2C2C</color>
+    <color name="gradient_start_blue_dark">#5A6CEC</color>
+    <color name="green_success">#66BB6A</color>
+    <color name="red_warning">#EF5350</color>
+    <color name="secondary_action_blue">#33B6FF</color>
+    <color name="dark_purple">#A040A0</color>
+    <color name="fade_purple">#33A066FF</color>
+    <color name="start_orange">#FFB74D</color>
+    <color name="stop_orange">#FFA726</color>
+    <color name="yellow">#FFEE58</color>
+    <color name="light_white">#121212</color>
+
+</resources>

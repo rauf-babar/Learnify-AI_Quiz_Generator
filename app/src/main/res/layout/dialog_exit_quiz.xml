@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:cardCornerRadius="24dp"
+    android:layout_margin="16dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center_horizontal"
+        android:padding="24dp">
+
+        <ImageView
+            android:id="@+id/iv_exit_illustration"
+            android:layout_width="150dp"
+            android:layout_height="120dp"
+            android:src="@drawable/ic_exit"
+            android:scaleType="centerCrop"
+            android:contentDescription="@string/exit_quiz_title" />
+
+        <TextView
+            android:id="@+id/tv_exit_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/exit_quiz_title"
+            android:textColor="@color/text_primary_dark"
+            android:textSize="22sp"
+            android:textStyle="bold"
+            android:layout_marginTop="16dp"/>
+
+        <TextView
+            android:id="@+id/tv_exit_subtitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/exit_quiz_subtitle"
+            android:textColor="@color/text_secondary_gray"
+            android:textSize="16sp"
+            android:gravity="center"
+            android:layout_marginTop="8dp"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_exit_confirm"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:text="@string/exit"
+            android:layout_marginTop="24dp"
+            android:textColor="@color/youtube_white"
+            app:backgroundTint="@color/red_warning"
+            app:cornerRadius="12dp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_exit_cancel"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:text="@string/cancel"
+            android:textColor="@color/illustration_black"
+            app:cornerRadius="12dp" />
+
+    </LinearLayout>
+</androidx.cardview.widget.CardView>

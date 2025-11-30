@@ -10,7 +10,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -134,10 +133,7 @@ public class QuizReviewFragment extends Fragment {
 
         quizDatabase.deleteQuiz(quizId, () -> {
             if (!isAdded()) return;
-            requireActivity().runOnUiThread(() -> {
-                Toast.makeText(getContext(), "Quiz deleted", Toast.LENGTH_SHORT).show();
-                requireActivity().getSupportFragmentManager().popBackStack();
-            });
+            requireActivity().runOnUiThread(() -> requireActivity().getSupportFragmentManager().popBackStack());
         });
     }
 

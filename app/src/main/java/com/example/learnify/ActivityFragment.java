@@ -25,7 +25,6 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputLayout;
 
 import java.util.ArrayList;
@@ -44,7 +43,6 @@ public class ActivityFragment extends Fragment {
     private NestedScrollView nsvStatsScrollView;
     private View noHistoryView;
     private TextView tvNoSearchResults;
-    private Button btnLoadFromFirebase;
     private EditText etSearchHistory;
     private TextInputLayout tilSearchHistory;
 
@@ -85,7 +83,7 @@ public class ActivityFragment extends Fragment {
         noHistoryView = view.findViewById(R.id.ll_no_history);
         tvNoSearchResults = view.findViewById(R.id.tv_no_search_results);
 
-        btnLoadFromFirebase = view.findViewById(R.id.btn_load_from_firebase);
+        Button btnLoadFromFirebase = view.findViewById(R.id.btn_load_from_firebase);
 
         tilSearchHistory = view.findViewById(R.id.til_search_history);
         etSearchHistory = view.findViewById(R.id.et_search_history);
@@ -99,9 +97,19 @@ public class ActivityFragment extends Fragment {
         setupHistoryRecyclerView();
         refreshData();
 
-        btnLoadFromFirebase.setOnClickListener(v -> syncWithFirebase());
-        btnSortHistory.setOnClickListener(this::showSortMenu);
+        btnLoadFromFirebase.setOnClickListener(v -> {
 
+            if (!NetworkUtils.isNetworkAvailable(requireContext())) {
+                showErrorDialog(getString(R.string.no_internet), getString(R.string.check_connection));
+                return;
+            }
+
+            requireActivity().getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.home_fragment_host, new QuizDownloaderFragment())
+                    .addToBackStack(null)
+                    .commit();
+        });
+        btnSortHistory.setOnClickListener(this::showSortMenu);
         setupSearchInteractions();
     }
 
@@ -123,8 +131,17 @@ public class ActivityFragment extends Fragment {
             if (hasFocus) {
                 tilSearchHistory.setEndIconDrawable(R.drawable.ic_search);
                 isCrossIconState = false;
+            } else {
+                if (etSearchHistory.getText().length() > 0) {
+                    tilSearchHistory.setEndIconDrawable(R.drawable.ic_clear_white_circle_purple);
+                    isCrossIconState = true;
+                } else {
+                    tilSearchHistory.setEndIconDrawable(R.drawable.ic_search);
+                    isCrossIconState = false;
+                }
             }
         });
+
 
         tilSearchHistory.setEndIconOnClickListener(v -> {
             if (isCrossIconState) {
@@ -147,7 +164,6 @@ public class ActivityFragment extends Fragment {
         PopupMenu popup = new PopupMenu(requireContext(), v);
         popup.getMenuInflater().inflate(R.menu.menu_sort_options, popup.getMenu());
 
-        // Restore checked state
         popup.getMenu().findItem(currentSortMode).setChecked(true);
 
         popup.setOnMenuItemClickListener(item -> {
@@ -185,7 +201,6 @@ public class ActivityFragment extends Fragment {
             } else if (currentSortMode == R.id.sort_oldest) {
                 return Long.compare(r1.getCompletedAt(), r2.getCompletedAt());
             } else {
-                // Default: Latest (Descending)
                 return Long.compare(r2.getCompletedAt(), r1.getCompletedAt());
             }
         });
@@ -245,47 +260,6 @@ public class ActivityFragment extends Fragment {
                 pbAccuracyFill.setProgress(accuracy);
                 tvAccuracyValue.setText(getString(R.string.score_percentage_format, accuracy));
             });
-        });
-    }
-
-    private void syncWithFirebase() {
-        String uid = sessionManager.getUserId();
-        if (uid == null) return;
-
-        if (!NetworkUtils.isNetworkAvailable(requireContext())) {
-            showErrorDialog(getString(R.string.no_internet), getString(R.string.check_connection));
-            return;
-        }
-
-        btnLoadFromFirebase.setEnabled(false);
-        btnLoadFromFirebase.setText(getString(R.string.syncing));
-
-        FirestoreManager.getInstance().getAllQuizHistory(uid, new FirestoreManager.OnHistoryLoadedListener() {
-            @Override
-            public void onHistoryLoaded(List<QuizRecord> records, List<String> rawJsons) {
-                if (!isAdded()) return;
-
-                for (int i = 0; i < records.size(); i++) {
-                    quizDatabase.addQuizRecord(records.get(i), rawJsons.get(i));
-                }
-
-                requireActivity().runOnUiThread(() -> {
-                    refreshData();
-                    btnLoadFromFirebase.setEnabled(true);
-                    btnLoadFromFirebase.setText(getString(R.string.load_all_quizzes));
-                    Snackbar.make(btnLoadFromFirebase, getString(R.string.sync_success), Snackbar.LENGTH_SHORT).show();
-                });
-            }
-
-            @Override
-            public void onError(String error) {
-                if (!isAdded()) return;
-                requireActivity().runOnUiThread(() -> {
-                    btnLoadFromFirebase.setEnabled(true);
-                    btnLoadFromFirebase.setText(getString(R.string.load_all_quizzes));
-                    showErrorDialog(getString(R.string.sync_failed), error);
-                });
-            }
         });
     }
 

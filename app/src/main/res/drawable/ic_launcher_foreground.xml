@@ -5,7 +5,6 @@
     android:viewportWidth="108"
     android:viewportHeight="108">
 
-  <!-- Background gradient circle -->
   <path
       android:pathData="M54,0
                           A54,54 0 1,1 53.99,0 Z">

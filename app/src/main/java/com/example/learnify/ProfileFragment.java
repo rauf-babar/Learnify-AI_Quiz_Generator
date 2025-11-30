@@ -80,12 +80,10 @@ public class ProfileFragment extends Fragment {
     private void setupClickListeners() {
         btnEditName.setOnClickListener(v -> toggleEditName());
 
-        rowChangePassword.setOnClickListener(v -> {
-            requireActivity().getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.home_fragment_host, new ChangePasswordFragment())
-                    .addToBackStack(null)
-                    .commit();
-        });
+        rowChangePassword.setOnClickListener(v -> requireActivity().getSupportFragmentManager().beginTransaction()
+                .replace(R.id.home_fragment_host, new ChangePasswordFragment())
+                .addToBackStack(null)
+                .commit());
 
         rowLogout.setOnClickListener(v -> showLogoutConfirmationDialog());
 
@@ -99,17 +97,18 @@ public class ProfileFragment extends Fragment {
             tvProfileEmail.setText(user.getEmail());
         }
 
+        long currentScore = sessionManager.getUserScore();
+        updateRankUI(currentScore);
+
         String uid = sessionManager.getUserId();
-        if (uid != null) {
-            quizDatabase.getStats(uid, stats -> {
+        if (uid != null && NetworkUtils.isNetworkAvailable(requireContext())) {
+            FirestoreManager.getInstance().getUserScore(uid, score -> {
                 if (!isAdded()) return;
 
-                int totalPoints = stats.get("totalCorrect");
-
-                requireActivity().runOnUiThread(() -> {
-                    updateRankUI(totalPoints);
-                    sessionManager.saveUserScore(totalPoints);
-                });
+                if (score != currentScore) {
+                    sessionManager.saveUserScore(score);
+                    requireActivity().runOnUiThread(() -> updateRankUI(score));
+                }
             });
         }
     }
@@ -153,6 +152,12 @@ public class ProfileFragment extends Fragment {
     }
 
     private void toggleEditName() {
+
+        if (!NetworkUtils.isNetworkAvailable(requireContext())) {
+            showErrorDialog(getString(R.string.no_internet), getString(R.string.check_connection));
+            return;
+        }
+
         if (!isEditingName) {
             startEditing();
         } else {
@@ -231,6 +236,11 @@ public class ProfileFragment extends Fragment {
     }
 
     private void showDeleteConfirmationDialog() {
+        if (!NetworkUtils.isNetworkAvailable(requireContext())) {
+            showErrorDialog(getString(R.string.no_internet), getString(R.string.check_connection));
+            return;
+        }
+
         new AlertDialog.Builder(requireContext())
                 .setTitle("Delete Account")
                 .setMessage("Are you sure? This action cannot be undone and all your data will be lost.")

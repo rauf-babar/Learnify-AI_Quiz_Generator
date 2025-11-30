@@ -46,9 +46,6 @@ public class FirestoreManager {
         user.put("name", name);
         user.put("email", email);
         user.put("lastLoginAt", System.currentTimeMillis());
-        user.put("totalQuizzesTaken", 0);
-        user.put("totalQuestionsSolved", 0);
-        user.put("totalCorrectAnswers", 0);
 
         db.collection("users").document(uid).set(user, SetOptions.merge())
                 .addOnFailureListener(e -> Log.e(TAG, "Error saving user profile", e));
@@ -181,8 +178,27 @@ public class FirestoreManager {
                 .addOnFailureListener(e -> listener.onError(e.getMessage()));
     }
 
-    public interface OnNameLoadedListener { void onNameLoaded(String name); }
-    public interface OnUserCheckListener { void onUserFound(boolean exists); }
+    public void getUserScore(String uid, OnScoreLoadedListener listener) {
+        db.collection("users").document(uid).get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+                        long score = documentSnapshot.getLong("totalCorrectAnswers") != null
+                                ? documentSnapshot.getLong("totalCorrectAnswers") : 0;
+                        listener.onScoreLoaded(score);
+                    } else {
+                        listener.onScoreLoaded(0);
+                    }
+                })
+                .addOnFailureListener(e -> listener.onScoreLoaded(0)); // Default to 0 on error
+    }
+
+    public interface OnNameLoadedListener {
+        void onNameLoaded(String name);
+    }
+    public interface OnUserCheckListener
+    {
+        void onUserFound(boolean exists);
+    }
     public interface OnUpdateListener {
         void onSuccess();
         void onFailure(String error);
@@ -190,5 +206,10 @@ public class FirestoreManager {
     public interface OnHistoryLoadedListener {
         void onHistoryLoaded(List<QuizRecord> records, List<String> rawJsons);
         void onError(String error);
+    }
+
+    public interface OnScoreLoadedListener
+    {
+        void onScoreLoaded(long score);
     }
 }

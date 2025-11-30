@@ -77,7 +77,7 @@ public class ReviewQuestionAdapter extends RecyclerView.Adapter<ReviewQuestionAd
 
     private void setupOption(Context context, TextView tv, MaterialCardView card, int index, int userIdx, int correctIdx, QuizQuestion q) {
         if (index >= q.getAnswers().size()) return;
-        tv.setTextSize(18);
+        tv.setTextSize(16);
         tv.setText(q.getAnswers().get(index).getAnswerText());
 
         card.setStrokeColor(ContextCompat.getColor(context, R.color.illustration_check_light));

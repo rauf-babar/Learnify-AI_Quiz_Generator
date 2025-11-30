@@ -276,14 +276,76 @@
                     android:id="@+id/tv_history_title"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="26dp"
+                    android:layout_marginTop="24dp"
+                    android:layout_marginEnd="8dp"
                     android:text="@string/history"
                     android:textColor="@color/text_primary_dark"
-                    android:textSize="25sp"
+                    android:textSize="24sp"
                     android:textStyle="bold"
-                    android:layout_marginTop="20dp"
+                    app:layout_constraintEnd_toStartOf="@id/btn_sort_history"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/gl_stats_grid" />
+
+                <ImageButton
+                    android:id="@+id/btn_sort_history"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_marginEnd="30dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:contentDescription="@string/sorting_filter"
+                    android:src="@drawable/ic_sort"
+                    app:tint="@color/text_primary_dark"
+                    app:layout_constraintBottom_toBottomOf="@id/tv_history_title"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/tv_history_title" />
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/til_search_history"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
                     android:layout_marginStart="24dp"
                     android:layout_marginEnd="24dp"
-                    app:layout_constraintTop_toBottomOf="@id/gl_stats_grid"
+                    android:hint="@string/search_history"
+                    app:boxBackgroundColor="@color/illustration_check_light"
+                    app:boxCornerRadiusTopStart="12dp"
+                    app:boxCornerRadiusTopEnd="12dp"
+                    app:boxCornerRadiusBottomStart="12dp"
+                    app:boxCornerRadiusBottomEnd="12dp"
+                    app:boxStrokeWidth="0dp"
+                    app:boxStrokeWidthFocused="0dp"
+
+                    app:endIconMode="custom"
+                    app:endIconDrawable="@drawable/ic_search"
+                    app:endIconTint="@null"
+
+                    app:hintTextColor="@color/text_secondary_gray"
+                    app:layout_constraintTop_toBottomOf="@id/tv_history_title"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/et_search_history"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:singleLine="true"
+                        android:imeOptions="actionDone"
+                        android:textColor="@color/text_primary_dark"/>
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <TextView
+                    android:id="@+id/tv_no_search_results"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/no_matching_quizzes_found"
+                    android:textColor="@color/text_secondary_gray"
+                    android:textSize="16sp"
+                    android:gravity="center"
+                    android:visibility="gone"
+                    android:layout_marginTop="24dp"
+                    app:layout_constraintTop_toBottomOf="@id/til_search_history"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"/>
 
@@ -293,10 +355,10 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
                     android:gravity="center"
-                    android:layout_marginTop="40dp"
+                    android:layout_marginTop="20dp"
                     android:visibility="gone"
                     tools:visibility="visible"
-                    app:layout_constraintTop_toBottomOf="@id/tv_history_title"
+                    app:layout_constraintTop_toBottomOf="@id/til_search_history"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent">
 
@@ -329,11 +391,11 @@
                     android:id="@+id/rv_history_list"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
+                    android:layout_marginTop="8dp"
                     android:layout_marginStart="24dp"
                     android:layout_marginEnd="24dp"
                     android:nestedScrollingEnabled="false"
-                    app:layout_constraintTop_toBottomOf="@id/tv_history_title"
+                    app:layout_constraintTop_toBottomOf="@id/til_search_history"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     tools:itemCount="5"
@@ -344,7 +406,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     app:barrierDirection="bottom"
-                    app:constraint_referenced_ids="rv_history_list,ll_no_history" />
+                    app:constraint_referenced_ids="rv_history_list,ll_no_history,tv_no_search_results" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btn_load_from_firebase"
@@ -353,7 +415,7 @@
                     android:layout_height="60dp"
                     android:layout_marginStart="24dp"
                     android:layout_marginEnd="24dp"
-                    android:layout_marginTop="32dp"
+                    android:layout_marginTop="24dp"
                     android:text="@string/load_all_quizzes"
                     android:textColor="@color/figma_purple_main"
                     app:strokeColor="@color/figma_purple_main"

@@ -223,7 +223,7 @@ public class HomeFragment extends Fragment {
             public void onError(Throwable t) {
                 isProcessing = false;
                 progressBar.setVisibility(View.GONE);
-                showErrorDialog("YouTube Error", t.getMessage());
+                showErrorDialog("YouTube Error", "Could not get video info. Ensure video has captions.");
             }
         });
     }
@@ -275,15 +275,34 @@ public class HomeFragment extends Fragment {
     }
 
     private void setupRecentQuizzes() {
-        quizAdapter = new QuizAdapter(requireContext(), recentQuizRecords, quizId -> {
-            if (isProcessing) return;
-            requireActivity().getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.home_fragment_host, QuizReviewFragment.newInstance(quizId))
-                    .addToBackStack(null)
-                    .commit();
-        });
+        quizAdapter = new QuizAdapter(requireContext(), recentQuizRecords,
+                quizId -> {
+                    if (isProcessing) return;
+                    requireActivity().getSupportFragmentManager().beginTransaction()
+                            .replace(R.id.home_fragment_host, QuizReviewFragment.newInstance(quizId))
+                            .addToBackStack(null)
+                            .commit();
+                },
+                this::showDeleteDialog
+        );
         recyclerViewRecentQuizzes.setLayoutManager(new LinearLayoutManager(requireContext()));
         recyclerViewRecentQuizzes.setAdapter(quizAdapter);
+    }
+
+    private void showDeleteDialog(String quizId) {
+        new AlertDialog.Builder(requireContext())
+                .setTitle("Delete Quiz")
+                .setMessage("Remove this quiz from your local history? It will remain in the cloud backup.")
+                .setPositiveButton("Delete", (dialog, which) -> deleteQuiz(quizId))
+                .setNegativeButton("Cancel", null)
+                .show();
+    }
+
+    private void deleteQuiz(String quizId) {
+        quizDatabase.deleteQuiz(quizId, () -> {
+            if (!isAdded()) return;
+            requireActivity().runOnUiThread(this::loadRecentQuizzes);
+        });
     }
 
     private void loadRecentQuizzes() {
@@ -298,11 +317,10 @@ public class HomeFragment extends Fragment {
                 } else {
                     recyclerViewRecentQuizzes.setVisibility(View.VISIBLE);
                     noRecentQuizzesView.setVisibility(View.GONE);
-                    int oldSize = recentQuizRecords.size();
-                    recentQuizRecords.clear();
-                    quizAdapter.notifyItemRangeRemoved(0, oldSize);
-                    recentQuizRecords.addAll(quizzes);
-                    quizAdapter.notifyItemRangeInserted(0, quizzes.size());
+
+                    if (quizAdapter != null) {
+                        quizAdapter.updateList(quizzes);
+                    }
                 }
             }
         });

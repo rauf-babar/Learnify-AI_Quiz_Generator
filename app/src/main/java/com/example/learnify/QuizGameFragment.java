@@ -24,6 +24,8 @@ import androidx.fragment.app.FragmentContainerView;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.google.android.material.button.MaterialButton;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -63,11 +65,12 @@ public class QuizGameFragment extends Fragment {
     private QuizGenerator quizGenerator;
 
     private String difficultyLevel;
+    private String quizLanguage;
     private int numQuestions;
     private String sourceType;
     private String sourceData;
 
-    private String aiGeneratedTopic = "Generated Quiz";
+    private String aiGeneratedTopic;
 
     @Nullable
     @Override
@@ -83,12 +86,20 @@ public class QuizGameFragment extends Fragment {
         quizDatabase = QuizDatabase.getInstance(requireContext());
         quizGenerator = new QuizGenerator();
 
+        aiGeneratedTopic = getString(R.string.generated_quiz);
+
         if (getArguments() != null) {
             difficultyLevel = getArguments().getString("DIFFICULTY", "Medium");
             totalTimeLimitMs = getArguments().getLong("TIME_LIMIT_MS", 600000);
             numQuestions = getArguments().getInt("NUM_QUESTIONS", 5);
             sourceType = getArguments().getString("SOURCE_TYPE", "UNKNOWN");
             sourceData = getArguments().getString("SOURCE_DATA", "");
+            quizLanguage = getArguments().getString("LANGUAGE", "English");
+
+            String passedTopic = getArguments().getString("TOPIC_NAME");
+            if (passedTopic != null && !passedTopic.isEmpty()) {
+                aiGeneratedTopic = passedTopic;
+            }
         }
 
         quizUiContainer = view.findViewById(R.id.quiz_ui_container);
@@ -126,8 +137,6 @@ public class QuizGameFragment extends Fragment {
                 requireActivity().runOnUiThread(() -> {
                     if (response.getTopic() != null && !response.getTopic().isEmpty()) {
                         aiGeneratedTopic = response.getTopic();
-                    } else {
-                        aiGeneratedTopic = getString(R.string.quiz_topic);
                     }
 
                     questions = response.getQuestions();
@@ -149,10 +158,25 @@ public class QuizGameFragment extends Fragment {
             }
         };
 
-        if ("REGENERATE".equals(sourceType)) {
-            quizGenerator.regenerateQuiz(extractedText, numQuestions, difficultyLevel, callback);
+        if ("RETAKE".equals(sourceType)) {
+            try {
+                Gson gson = new Gson();
+                questions = gson.fromJson(extractedText, new TypeToken<List<QuizQuestion>>(){}.getType());
+
+                loadingContainer.setVisibility(View.GONE);
+                quizUiContainer.setVisibility(View.VISIBLE);
+                setupViewPager();
+                setupBackButton();
+                startTimer();
+                updateScoreboard();
+            } catch (Exception e) {
+                showErrorDialog("Error", "Failed to load previous questions.");
+            }
+
+        } else if ("REGENERATE".equals(sourceType)) {
+            quizGenerator.regenerateQuiz(extractedText, numQuestions, difficultyLevel, quizLanguage, callback);
         } else {
-            quizGenerator.generateQuiz(extractedText, numQuestions, difficultyLevel, callback);
+            quizGenerator.generateQuiz(extractedText, numQuestions, difficultyLevel, quizLanguage, callback);
         }
     }
 
@@ -240,7 +264,7 @@ public class QuizGameFragment extends Fragment {
     private void setButtonToSubmit(boolean isEnabled) {
         btnSubmitNext.setText(getString(R.string.submit));
         btnSubmitNext.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.figma_purple_main));
-        btnSubmitNext.setTextColor(ContextCompat.getColor(requireContext(), R.color.youtube_white));
+        btnSubmitNext.setTextColor(ContextCompat.getColor(requireContext(), R.color.white));
         btnSubmitNext.setStrokeWidth(0);
         btnSubmitNext.setEnabled(isEnabled);
     }
@@ -252,7 +276,7 @@ public class QuizGameFragment extends Fragment {
         } else {
             btnSubmitNext.setText(getString(R.string.next));
         }
-        btnSubmitNext.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.illustration_bg_lavender_medium));
+        btnSubmitNext.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.white));
         btnSubmitNext.setTextColor(ContextCompat.getColor(requireContext(), R.color.figma_purple_main));
         btnSubmitNext.setStrokeColor(ContextCompat.getColorStateList(requireContext(), R.color.figma_purple_main));
         btnSubmitNext.setStrokeWidth(4);

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/sort_latest"
+            android:title="@string/latest"
+            android:checked="true" />
+        <item
+            android:id="@+id/sort_oldest"
+            android:title="@string/oldest" />
+        <item
+            android:id="@+id/sort_alphabetical"
+            android:title="@string/alphabetical_asc" />
+        <item
+            android:id="@+id/sort_accuracy_low"
+            android:title="@string/lowest_accuracy" />
+        <item
+            android:id="@+id/sort_accuracy_high"
+            android:title="@string/highest_accuracy" />
+    </group>
+</menu>

@@ -8,14 +8,11 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-
-import java.util.Locale;
 
 public class ResultFragment extends Fragment {
 
@@ -90,7 +87,7 @@ public class ResultFragment extends Fragment {
         tvWrong.setText(String.valueOf(wrong));
         tvTotal.setText(String.valueOf(total));
 
-        tvScorePercent.setText(percent + "%");
+        tvScorePercent.setText(getString(R.string.score_percentage_format,percent));
         pbScore.setProgress(percent);
     }
 
@@ -112,7 +109,7 @@ public class ResultFragment extends Fragment {
                 if (!isAdded()) return;
                 requireActivity().runOnUiThread(() -> {
                     llAiLoading.setVisibility(View.GONE);
-                    tvAiFeedback.setText("Could not generate feedback at this time.");
+                    tvAiFeedback.setText(getString(R.string.no_feedback_available));
                     tvAiFeedback.setVisibility(View.VISIBLE);
                 });
             }

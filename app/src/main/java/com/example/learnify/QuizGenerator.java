@@ -29,9 +29,14 @@ public class QuizGenerator {
         this.gson = new Gson();
     }
 
-    public void generateQuiz(String text, int numQuestions, String difficulty, QuizCallback callback) {
+    public void generateQuiz(String text, int numQuestions, String difficulty, String language, QuizCallback callback) {
+        String langInstruction = language.equals("English")
+                ? "Generate the quiz strictly in English. If the input text is in another language, translate the concepts and generate English questions."
+                : "Generate the quiz in the same language as the input text.";
+
         String prompt = "Analyze the text below and generate a " + difficulty + " level quiz with " + numQuestions + " multiple-choice questions.\n" +
-                "You must also generate a short, descriptive 'topic' title (max 5 words) that summarizes what this text is about.\n\n" +
+                "You must also generate a short, descriptive 'topic' title (max 5 words) that summarizes what this text is about.\n" +
+                langInstruction + "\n\n" +
                 "Return the output strictly as a raw JSON Object (no Markdown). The schema is:\n" +
                 "{\n" +
                 "  \"topic\": \"string\",\n" +
@@ -45,20 +50,27 @@ public class QuizGenerator {
         sendRequest(prompt, callback);
     }
 
-    public void regenerateQuiz(String oldQuestionsJson, int numQuestions, String difficulty, QuizCallback callback) {
+    public void regenerateQuiz(String oldQuestionsJson, int numQuestions, String difficulty, String language, QuizCallback callback) {
+        String langInstruction = language.equals("English")
+                ? "Generate the quiz strictly in English."
+                : "Generate the quiz in the same language as the input context.";
+
         String prompt = "You are a Quiz Re-mastering Engine. I will provide a list of old quiz questions in JSON format.\n" +
                 "Your task is to generate a NEW " + difficulty + " level quiz with " + numQuestions + " questions based strictly on the concepts covered in the input questions.\n\n" +
                 "RULES:\n" +
                 "1. Do NOT simply copy the old questions. Rephrase them, turn them into scenario-based questions, or ask about the same concept from a different angle.\n" +
-                "2. Do NOT introduce new external topics. If the input covers BGP, stick to BGP.\n" +
+                "2. Do NOT introduce new external topics.\n" +
                 "3. Keep the same 'topic' title as the input context.\n" +
-                "4. Return strictly raw JSON Object (no Markdown) matching this schema:\n" +
+                "   - If the topic is originally in a different language than the required output language (Instruction 4), TRANSLATE the topic into the output language.\n" +
+                "4. " + langInstruction + "\n" +
+                "5. Return strictly raw JSON Object (no Markdown) matching this schema:\n" +
                 "{\n" +
                 "  \"topic\": \"string\",\n" +
                 "  \"questions\": [\n" +
                 "    { \"questionText\": \"string\", \"explanation\": \"string\", \"answers\": [ { \"answerText\": \"string\", \"isCorrect\": boolean } ] }\n" +
                 "  ]\n" +
                 "}\n\n" +
+                "Ensure exactly 4 options per question.\n" +
                 "Input Questions JSON: " + oldQuestionsJson;
 
         sendRequest(prompt, callback);
@@ -71,7 +83,7 @@ public class QuizGenerator {
 
         ListenableFuture<GenerateContentResponse> responseFuture = model.generateContent(content);
 
-        Futures.addCallback(responseFuture, new FutureCallback<GenerateContentResponse>() {
+        Futures.addCallback(responseFuture, new FutureCallback<>() {
             @Override
             public void onSuccess(GenerateContentResponse result) {
                 try {
@@ -132,17 +144,15 @@ public class QuizGenerator {
         }
 
         promptBuilder.append("\nINSTRUCTIONS FOR FEEDBACK:\n");
-        promptBuilder.append("1. Analyze the [WRONG] answers to identify specific weak areas or concepts the user misunderstands.\n");
-        promptBuilder.append("2. Acknowledge the [CORRECT] answers to validate what they already know well.\n");
-        promptBuilder.append("3. Give a short, encouraging summary of their overall performance.\n");
+        promptBuilder.append("1. LANGUAGE DETECTION: Read the quiz questions and answers provided above. Write your entire response strictly in the SAME language as the questions and answers.\n");
+        promptBuilder.append("2. FORMATTING: Do NOT use Markdown (no asterisks, no hashes). Do NOT use any headings or titles. Use only simple bullet points (•) and clear short paragraphs.\n");
+        promptBuilder.append("3. WEAK AREAS: Analyze the [WRONG] answers. Explain the core concepts the user missed.\n");
+        promptBuilder.append("4. STRENGTHS: Briefly validate what the user understands well based on [CORRECT] answers.\n");
+        promptBuilder.append("5. NEXT STEPS: Suggest minimum 2 specific topics or keywords to study next. You may suggest names of popular YouTube channels or websites known for this topic, but do NOT generate specific URLs as they may be broken.\n");
 
-        if (accuracy >= 20) {
-            promptBuilder.append("4. Suggest 2 specific sub-topics or related concepts they should learn NEXT to advance based on what they got right.\n");
-        } else {
-            promptBuilder.append("4. Give encouraging advice to restart the basics. Do NOT suggest advanced next steps yet.\n");
+        if (accuracy < 40) {
+            promptBuilder.append("6. ADVICE: Offer encouraging advice to review the fundamentals before retaking.\n");
         }
-
-        promptBuilder.append("\nKeep the tone helpful, professional, and concise. Return plain text, no markdown.");
 
         Content content = new Content.Builder()
                 .addText(promptBuilder.toString())
@@ -150,7 +160,7 @@ public class QuizGenerator {
 
         ListenableFuture<GenerateContentResponse> responseFuture = model.generateContent(content);
 
-        Futures.addCallback(responseFuture, new FutureCallback<GenerateContentResponse>() {
+        Futures.addCallback(responseFuture, new FutureCallback<>() {
             @Override
             public void onSuccess(GenerateContentResponse result) {
                 String text = result.getText();

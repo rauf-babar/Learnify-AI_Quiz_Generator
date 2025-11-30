@@ -173,15 +173,15 @@ public class LoginFragment extends Fragment {
                 String token = task.getResult().getToken();
                 String uid = user.getUid();
 
-                FirestoreManager.getInstance().getUserName(uid, name -> {
+                FirestoreManager.getInstance().getUserName(uid, name -> FirestoreManager.getInstance().getUserScore(uid, score -> {
                     sessionManager.saveSession(token, uid, name);
-                    FirestoreManager.getInstance().saveUserProfile(name, user.getEmail());
+                    sessionManager.saveUserScore(score);
 
                     Intent intent = new Intent(requireActivity(), HomeActivity.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(intent);
                     requireActivity().finish();
-                });
+                }));
             }
         });
     }

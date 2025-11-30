@@ -10,7 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
-
+import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -19,6 +19,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.gson.Gson;
 
+import java.text.DateFormat;
+import java.util.Date;
+
 public class QuizReviewFragment extends Fragment {
 
     private static final String ARG_QUIZ_ID = "quiz_id";
@@ -26,7 +29,7 @@ public class QuizReviewFragment extends Fragment {
     private QuizDatabase quizDatabase;
     private QuizResult currentQuizResult;
 
-    private TextView tvTopic, tvDiff, tvQs, tvScore, tvTime;
+    private TextView tvTopic, tvDiff, tvQs, tvScore, tvTime, tvDate;
     private RecyclerView rvQuestions;
 
     public static QuizReviewFragment newInstance(String quizId) {
@@ -58,6 +61,7 @@ public class QuizReviewFragment extends Fragment {
         quizDatabase = QuizDatabase.getInstance(requireContext());
 
         tvTopic = view.findViewById(R.id.tv_review_topic);
+        tvDate = view.findViewById(R.id.tv_quiz_date);
         tvDiff = view.findViewById(R.id.tv_stat_difficulty);
         tvQs = view.findViewById(R.id.tv_stat_questions);
         tvScore = view.findViewById(R.id.tv_stat_score);
@@ -65,8 +69,10 @@ public class QuizReviewFragment extends Fragment {
         rvQuestions = view.findViewById(R.id.rv_review_questions);
 
         view.findViewById(R.id.back_button_container).setOnClickListener(v -> requireActivity().getSupportFragmentManager().popBackStack());
+        view.findViewById(R.id.delete_button_container).setOnClickListener(v -> showDeleteDialog());
 
-        view.findViewById(R.id.btn_retake_quiz).setOnClickListener(v -> handleRetake());
+        view.findViewById(R.id.btn_regenerate_quiz).setOnClickListener(v -> handleAction("REGENERATE"));
+        view.findViewById(R.id.btn_retake_quiz).setOnClickListener(v -> handleAction("RETAKE"));
 
         loadData();
     }
@@ -92,6 +98,9 @@ public class QuizReviewFragment extends Fragment {
 
                 tvTopic.setText(record.getTopicName());
 
+                String dateStr = DateFormat.getDateInstance(DateFormat.MEDIUM).format(new Date(record.getCompletedAt()));
+                tvDate.setText(dateStr);
+
                 String diff = record.getDifficulty();
                 tvDiff.setText(diff != null && !diff.isEmpty() ? diff : "Medium");
 
@@ -111,21 +120,58 @@ public class QuizReviewFragment extends Fragment {
         });
     }
 
-    private void handleRetake() {
+    private void showDeleteDialog() {
+        new AlertDialog.Builder(requireContext())
+                .setTitle("Delete Quiz")
+                .setMessage("Are you sure you want to delete this quiz from your local history? It will remain in the cloud backup.")
+                .setPositiveButton("Delete", (dialog, which) -> deleteQuiz())
+                .setNegativeButton("Cancel", null)
+                .show();
+    }
+
+    private void deleteQuiz() {
+        if (quizId == null) return;
+
+        quizDatabase.deleteQuiz(quizId, () -> {
+            if (!isAdded()) return;
+            requireActivity().runOnUiThread(() -> {
+                Toast.makeText(getContext(), "Quiz deleted", Toast.LENGTH_SHORT).show();
+                requireActivity().getSupportFragmentManager().popBackStack();
+            });
+        });
+    }
+
+    private void handleAction(String type) {
         if (currentQuizResult == null) {
             showErrorDialog("Error", "Quiz data not loaded yet.");
             return;
         }
 
+        if (!NetworkUtils.isNetworkAvailable(requireContext())) {
+            showErrorDialog(getString(R.string.no_internet), getString(R.string.check_connection));
+            return;
+        }
+
         Gson gson = new Gson();
         String contextJson = gson.toJson(currentQuizResult.getQuestions());
-
         QuizDataHolder.getInstance().setExtractedText(contextJson);
 
         Intent intent = new Intent(requireActivity(), QuizActivity.class);
-        intent.putExtra("SOURCE_TYPE", "REGENERATE");
+        intent.putExtra("SOURCE_TYPE", type);
         intent.putExtra("SOURCE_DATA", currentQuizResult.getQuizRecord().getSourceData());
 
+        String currentTopic = currentQuizResult.getQuizRecord().getTopicName();
+
+        if ("RETAKE".equals(type)) {
+            if (!currentTopic.endsWith("(Retake)")) {
+                currentTopic = currentTopic + " (Retake)";
+            }
+            intent.putExtra("DIFFICULTY", currentQuizResult.getQuizRecord().getDifficulty());
+            intent.putExtra("NUM_QUESTIONS", currentQuizResult.getQuizRecord().getTotalQuestions());
+            intent.putExtra("LANGUAGE", "Source");
+        }
+
+        intent.putExtra("TOPIC_NAME", currentTopic);
         startActivity(intent);
     }
 

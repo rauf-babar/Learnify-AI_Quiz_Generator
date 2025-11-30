@@ -347,7 +347,7 @@
                             android:layout_width="24dp"
                             android:layout_height="24dp"
                             android:contentDescription="@string/delete_account"
-                            android:src="@drawable/ic_delete_account"/>
+                            android:src="@drawable/ic_delete"/>
                         <TextView
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"

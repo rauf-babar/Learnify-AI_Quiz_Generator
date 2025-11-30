@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -21,11 +22,19 @@ public class QuizAdapter extends RecyclerView.Adapter<QuizAdapter.QuizViewHolder
     private final List<QuizRecord> quizRecords;
     private final Context context;
     private final OnQuizClickListener listener;
+    private final OnQuizLongClickListener longClickListener;
 
-    public QuizAdapter(Context context, List<QuizRecord> quizRecords, OnQuizClickListener listener) {
+    public QuizAdapter(Context context, List<QuizRecord> quizRecords, OnQuizClickListener listener, OnQuizLongClickListener longClickListener) {
         this.context = context;
-        this.quizRecords = quizRecords;
+        this.quizRecords = new ArrayList<>(quizRecords);
         this.listener = listener;
+        this.longClickListener = longClickListener;
+    }
+
+    public void updateList(List<QuizRecord> newList) {
+        quizRecords.clear();
+        quizRecords.addAll(newList);
+        notifyDataSetChanged();
     }
 
     @NonNull
@@ -48,7 +57,7 @@ public class QuizAdapter extends RecyclerView.Adapter<QuizAdapter.QuizViewHolder
 
         if ("YOUTUBE".equals(source)) {
             sourceIconRes = R.drawable.ic_video_source;
-        } else if ("REGENERATE".equals(source)) {
+        } else if ("REGENERATE".equals(source) || "RETAKE".equals(source)) {
             sourceIconRes = R.drawable.ic_revision;
         } else {
             sourceIconRes = R.drawable.ic_document_file;
@@ -68,6 +77,14 @@ public class QuizAdapter extends RecyclerView.Adapter<QuizAdapter.QuizViewHolder
             if (listener != null) {
                 listener.onQuizClick(record.getQuizId());
             }
+        });
+
+        holder.itemView.setOnLongClickListener(v -> {
+            if (longClickListener != null) {
+                longClickListener.onQuizLongClick(record.getQuizId());
+                return true;
+            }
+            return false;
         });
     }
 
@@ -93,5 +110,9 @@ public class QuizAdapter extends RecyclerView.Adapter<QuizAdapter.QuizViewHolder
 
     public interface OnQuizClickListener {
         void onQuizClick(String quizId);
+    }
+
+    public interface OnQuizLongClickListener {
+        void onQuizLongClick(String quizId);
     }
 }

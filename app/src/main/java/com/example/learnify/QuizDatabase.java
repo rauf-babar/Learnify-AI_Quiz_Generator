@@ -63,7 +63,7 @@ public class QuizDatabase {
             values.put(COL_ACCURACY, record.getAccuracyPercentage());
             values.put(COL_TIME_TAKEN_MS, record.getTimeTakenMs());
             values.put(COL_COMPLETED_AT, record.getCompletedAt());
-            values.put(COL_DIFFICULTY, record.getDifficulty());
+            values.put(COL_DIFFICULTY, record.getDifficulty()); // Save Difficulty
             values.put(COL_QUIZ_REVIEW_DATA, quizReviewJson);
 
             db.insertWithOnConflict(TABLE_QUIZ_HISTORY, null, values, SQLiteDatabase.CONFLICT_REPLACE);
@@ -74,6 +74,17 @@ public class QuizDatabase {
     public void addQuizRecord(QuizRecord record, QuizResult result) {
         String json = gson.toJson(result);
         addQuizRecord(record, json);
+    }
+
+    public void deleteQuiz(String quizId, DeleteCallback callback) {
+        executor.execute(() -> {
+            SQLiteDatabase db = dbHelper.getWritableDatabase();
+            db.delete(TABLE_QUIZ_HISTORY, COL_HISTORY_ID + " = ?", new String[]{quizId});
+            db.close();
+            if (callback != null) {
+                new Handler(Looper.getMainLooper()).post(callback::onDeleteComplete);
+            }
+        });
     }
 
     public void getRecentQuizzes(String uid, DatabaseCallback<List<QuizRecord>> callback) {
@@ -109,8 +120,7 @@ public class QuizDatabase {
                     String diff = "Medium";
                     int diffIndex = cursor.getColumnIndex(COL_DIFFICULTY);
                     if (diffIndex != -1) {
-                        String val = cursor.getString(diffIndex);
-                        if (val != null) diff = val;
+                        diff = cursor.getString(diffIndex);
                     }
 
                     QuizRecord record = new QuizRecord(
@@ -140,12 +150,10 @@ public class QuizDatabase {
             SQLiteDatabase db = dbHelper.getReadableDatabase();
             Map<String, Integer> stats = new HashMap<>();
 
-            String selection = COL_UID + " = ?";
             String[] selectionArgs = { uid };
 
             Cursor cursor = db.rawQuery("SELECT COUNT(*) FROM " + TABLE_QUIZ_HISTORY + " WHERE " + COL_UID + " = ?", selectionArgs);
             if (cursor.moveToFirst()) stats.put("totalQuizzes", cursor.getInt(0));
-            else stats.put("totalQuizzes", 0);
             cursor.close();
 
             cursor = db.rawQuery("SELECT SUM(" + COL_TOTAL_QUESTIONS + ") FROM " + TABLE_QUIZ_HISTORY + " WHERE " + COL_UID + " = ?", selectionArgs);
@@ -185,11 +193,7 @@ public class QuizDatabase {
             if (cursor.moveToFirst()) {
                 String json = cursor.getString(cursor.getColumnIndexOrThrow(COL_QUIZ_REVIEW_DATA));
                 if (json != null && !json.isEmpty()) {
-                    try {
-                        result = gson.fromJson(json, QuizResult.class);
-                    } catch (Exception e) {
-                        android.util.Log.e("QuizDatabase", "JSON Parsing Failed", e);
-                    }
+                    result = gson.fromJson(json, QuizResult.class);
                 }
             }
             cursor.close();
@@ -200,7 +204,7 @@ public class QuizDatabase {
         });
     }
 
-    public void clearUserData(String uid) {
+   public void clearUserData(String uid) {
         executor.execute(() -> {
             SQLiteDatabase db = dbHelper.getWritableDatabase();
             db.delete(TABLE_QUIZ_HISTORY, COL_UID + " = ?", new String[]{uid});
@@ -210,6 +214,10 @@ public class QuizDatabase {
 
     public interface DatabaseCallback<T> {
         void onComplete(T result);
+    }
+
+    public interface DeleteCallback {
+        void onDeleteComplete();
     }
 
     private static class QuizDbHelper extends SQLiteOpenHelper {

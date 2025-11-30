@@ -116,12 +116,10 @@ public class ChangePasswordFragment extends Fragment {
         btnResetPassword.setText(getString(R.string.Updating));
         progressBar.setVisibility(View.VISIBLE);
 
-        // 1. Re-authenticate User
         AuthCredential credential = EmailAuthProvider.getCredential(user.getEmail(), oldPass);
 
         user.reauthenticate(credential).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
-                // 2. Update Password
                 user.updatePassword(newPass).addOnCompleteListener(updateTask -> {
                     if (!isAdded()) return;
 

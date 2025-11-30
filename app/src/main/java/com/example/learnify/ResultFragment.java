@@ -31,7 +31,6 @@ public class ResultFragment extends Fragment {
             quizResult = (QuizResult) getArguments().getSerializable("QUIZ_RESULT");
         }
 
-        // Handle system back button
         requireActivity().getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
@@ -52,7 +51,6 @@ public class ResultFragment extends Fragment {
 
         quizGenerator = new QuizGenerator();
 
-        // Init Views
         tvTopic = view.findViewById(R.id.tv_result_topic);
         tvScorePercent = view.findViewById(R.id.tv_score_percentage);
         pbScore = view.findViewById(R.id.pb_result_score);
@@ -92,7 +90,6 @@ public class ResultFragment extends Fragment {
     }
 
     private void generateAiAnalysis() {
-        // Call AI
         quizGenerator.generateFeedback(quizResult, new QuizGenerator.FeedbackCallback() {
             @Override
             public void onSuccess(String feedback) {

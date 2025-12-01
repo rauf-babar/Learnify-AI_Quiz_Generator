@@ -146,6 +146,12 @@ public class HomeFragment extends Fragment {
         createFromYtButton.setOnClickListener(v -> {
             if (isProcessing) return;
             String url = Objects.requireNonNull(etYoutubeUrl.getText()).toString().trim();
+
+            if (!url.toLowerCase().contains("youtube.com") && !url.toLowerCase().contains("youtu.be")) {
+                showUrlError("Invalid YouTube URL");
+                return;
+            }
+
             if(url.isEmpty()) {
                 showUrlError(getString(R.string.error_url_required));
                 return;
